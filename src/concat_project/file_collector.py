@@ -12,5 +12,5 @@ def collect_files(root: Path, extensions, excludes, include_hidden):
             continue
         if not any(str(path).endswith(ext) for ext in extensions):
             continue
-        file.append((rel_path, path))
+        files.append((rel_path, path))
     return sorted(files)
