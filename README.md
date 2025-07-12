@@ -91,11 +91,11 @@ concat-project/
 └── src/
     └── concat_project/
         ├── __init__.py
-        ├── cli.py           # Entry point
-        ├── config.py        # Arg parsing & validation
-        ├── tree_renderer.py # Tree drawing
-        ├── file_collector   .py# File discovery
-        └── writer.py        # Output generation
+        ├── cli.py            # Entry point
+        ├── config.py         # Arg parsing & validation
+        ├── tree_renderr.  py # Tree drawing
+        ├── file_coltor.py # y# File discovery
+        └── writer.py         # Output generation
 ```
 
 ---
