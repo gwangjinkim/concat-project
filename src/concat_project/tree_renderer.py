@@ -14,7 +14,7 @@ def render_tree(root, extensions, excludes, include_hidden, style="unicode"):
         
         for i, entry in enumerate(entries):
             connector = charset["last"] if i == len(entries) - 1 else charset["branch"]
-            lines.append(f"{prefiex}{connector}{entry.name}")
+            lines.append(f"{prefix}{connector}{entry.name}")
             if entry.is_dir():
                 new_prefix = prefix + (charset["space"] if i == len(entries) - 1 else charset["pipe"])
                 walk(entry, new_prefix)
