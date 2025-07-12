@@ -1,0 +1,12 @@
+[project]
+name = "concat-project"
+version = "0.1.0"
+description = "Concatenate project files with section headers and file tree overview."
+authors = [{ name = "Gwang-Jin Kim", email = "gwang.jin.kim.phd@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+concat-project = "concat_project.cli:main"
+
