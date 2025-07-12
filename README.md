@@ -42,7 +42,14 @@ Make sure you're in the root folder of the project.
 uv venv
 uv pip install -e .
 ```
-Now the CLI is available:
+
+To make the CLI command available from everywhere and not just from within the project folder, run:
+```bash
+cd concat-project    # enter the project folder
+uv tool install .    # install using uv tool (pytools equivalent)
+```
+
+Now the CLI is available globally:
 
 ```bash
 concate-project --help
