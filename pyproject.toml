@@ -10,3 +10,5 @@ dependencies = []
 [project.scripts]
 concat-project = "concat_project.cli:main"
 
+[tool.uv]
+package = true
