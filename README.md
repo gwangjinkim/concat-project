@@ -71,15 +71,14 @@ This will:
 
 ##  Command-Line Options
 
-| Option	| Description |
-+---------------+-------------+
-| --input	| Path to the root project folder (required) |
-| --output	| Path to write the concatenated file (required) |
-| --ext	Allowed | file extensions (e.g., .lisp .asd) |
-| --exclude	| Folders or files to exclude (relative paths) |
-| --include-hidden	| Also include hidden files/folders |
-| --tree-style	| Style of tree drawing: unicode (default) or ascii |
-
+| Option             | Description                                                   |
+|--------------------|---------------------------------------------------------------|
+| `--input`          | Path to the root project folder (**required**)                |
+| `--output`         | Path to write the concatenated file (**required**)            |
+| `--ext`            | Allowed file extensions (e.g., `.lisp`, `.cl`, `.asd`)        |
+| `--exclude`        | Folders or files to exclude (relative paths)                  |
+| `--include-hidden` | Also include hidden files and folders                         |
+| `--tree-style`     | Style of file tree: `unicode` (default) or `ascii`            |
 
 ---
 
