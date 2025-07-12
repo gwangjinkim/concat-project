@@ -18,14 +18,37 @@
 
 ## Installation
 
+This project uses [uv](https://github.com/astral-sh/uv) - a next-generation Python package manager that's extremely fast and designed to replace `pip`, `poetry`, `venv`, `virtualenv`, `pyenv`, `pytools`, `pipx`, and more (written in Rust).
+
+### 1. Install uv (if not already)
+
+```bash
+curl -Ls https://astral.sh/uv/install.sh | sh
+```
+
+or with Homebrew:
+
+```bash
+brew install astral-sh/uv/uv
+```
+
+For Windows or other options, see: https://docs.astral.sh/uv/installation/
+
+### 2. Create environment and install
+
 Make sure you're in the root folder of the project.
 
 ```bash
 uv venv
 uv pip install -e .
 ```
+Now the CLI is available:
 
-⸻
+```bash
+concate-project --help
+```
+
+---
 
 ## Example Usage
 
