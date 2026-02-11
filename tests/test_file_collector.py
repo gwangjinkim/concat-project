@@ -91,3 +91,36 @@ def test_collect_files_applies_exclude_grep_filter(tmp_path: Path):
     )
 
     assert [str(rel) for rel, _ in files] == ["src/keep.lisp"]
+
+
+def test_collect_files_only_takes_direct_file_matches_without_recursive(tmp_path: Path):
+    _make_file(tmp_path / "src" / "nested" / "keep.lisp", "(defun keep ())")
+    _make_file(tmp_path / "src" / "top.lisp", "(defun top ())")
+
+    files = collect_files(
+        root=tmp_path,
+        input_selectors=["src"],
+        extension_selectors=[".lisp"],
+        excludes=[],
+        include_hidden=False,
+        recursive=False,
+    )
+
+    assert [str(rel) for rel, _ in files] == []
+
+
+def test_collect_files_recurses_when_input_matches_folder(tmp_path: Path):
+    _make_file(tmp_path / "src" / "nested" / "keep.lisp", "(defun keep ())")
+    _make_file(tmp_path / "src" / "top.lisp", "(defun top ())")
+    _make_file(tmp_path / "lib" / "skip.lisp", "(defun skip ())")
+
+    files = collect_files(
+        root=tmp_path,
+        input_selectors=["src"],
+        extension_selectors=[".lisp"],
+        excludes=[],
+        include_hidden=False,
+        recursive=True,
+    )
+
+    assert [str(rel) for rel, _ in files] == ["src/nested/keep.lisp", "src/top.lisp"]

@@ -14,6 +14,7 @@ def main():
         include_hidden=args.include_hidden,
         grep_pattern=args.grep,
         exclude_grep_pattern=args.exclude_grep,
+        recursive=args.recursive,
     )
     tree = render_tree([rel_path for rel_path, _ in files], style=args.tree_style)
     write_output(args.output, args.root, files, tree)

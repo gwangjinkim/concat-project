@@ -10,19 +10,34 @@ def _is_glob(selector: str) -> bool:
     return any(char in selector for char in "*?[]")
 
 
+def _matches_single_selector(text: str, selector: str) -> bool:
+    if selector.startswith(_REGEX_PREFIX):
+        return re.search(selector[len(_REGEX_PREFIX) :], text) is not None
+    if _is_glob(selector):
+        return fnmatch.fnmatch(text, selector)
+    return text == selector
+
+
 def _matches_selector(text: str, selectors: list[str]) -> bool:
     if not selectors:
         return True
+    return any(_matches_single_selector(text, selector) for selector in selectors)
 
-    for selector in selectors:
-        if selector.startswith(_REGEX_PREFIX):
-            if re.search(selector[len(_REGEX_PREFIX) :], text):
-                return True
-        elif _is_glob(selector):
-            if fnmatch.fnmatch(text, selector):
-                return True
-        elif text == selector:
+
+def _matches_input_selector(rel_path: Path, input_selectors: list[str], recursive: bool) -> bool:
+    if not input_selectors:
+        return True
+
+    rel_path_str = str(rel_path)
+    for selector in input_selectors:
+        if _matches_single_selector(rel_path_str, selector):
             return True
+        if recursive:
+            ancestor = rel_path.parent
+            while str(ancestor) != ".":
+                if _matches_single_selector(str(ancestor), selector):
+                    return True
+                ancestor = ancestor.parent
     return False
 
 
@@ -79,6 +94,7 @@ def collect_files(
     include_hidden: bool,
     grep_pattern: str | None = None,
     exclude_grep_pattern: str | None = None,
+    recursive: bool = False,
 ):
     files: list[tuple[Path, Path]] = []
     for path in root.rglob("*"):
@@ -91,7 +107,7 @@ def collect_files(
             continue
         if _is_excluded(rel_path_str, excludes):
             continue
-        if not _matches_selector(rel_path_str, input_selectors):
+        if not _matches_input_selector(rel_path, input_selectors, recursive):
             continue
         if not _matches_extension(rel_path, extension_selectors):
             continue

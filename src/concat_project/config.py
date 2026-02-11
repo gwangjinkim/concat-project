@@ -30,6 +30,15 @@ def parse_args():
             "(e.g. src/**/*.py), and regex patterns with the re: prefix."
         ),
     )
+    parser.add_argument(
+        "-r",
+        "--recursive",
+        action="store_true",
+        help=(
+            "If an --input selector matches a folder, recursively include files within that folder. "
+            "Direct file matches are always included."
+        ),
+    )
     parser.add_argument("--output", required=True, type=Path, help="Output file path")
     parser.add_argument(
         "--ext",
