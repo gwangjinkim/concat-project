@@ -51,7 +51,26 @@ def parse_args():
             "matches any content."
         ),
     )
-    parser.add_argument("--exclude", nargs="*", default=[], help="Relative folders or files to exclude")
+    parser.add_argument(
+        "--exclude",
+        nargs="*",
+        default=[],
+        help=(
+            "Exclude selectors relative to --root. Supports literal paths/prefixes, POSIX globs, "
+            "and regex patterns with the re: prefix."
+        ),
+    )
+    parser.add_argument(
+        "--exclude-grep",
+        nargs="?",
+        const=".*",
+        type=_validate_grep_pattern,
+        default=None,
+        help=(
+            "Exclude files whose content matches this regex. If provided without a pattern, "
+            "excludes any readable text file."
+        ),
+    )
     parser.add_argument("--include-hidden", action="store_true", help="Include hidden files/folders")
     parser.add_argument("--tree-style", default="unicode", choices=["unicode", "ascii"], help="Style of file tree")
     return parser.parse_args()

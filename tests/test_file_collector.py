@@ -58,3 +58,36 @@ def test_collect_files_applies_grep_filter(tmp_path: Path):
     )
 
     assert [str(rel) for rel, _ in files] == ["src/match.lisp"]
+
+
+def test_collect_files_supports_exclude_literal_glob_and_regex(tmp_path: Path):
+    _make_file(tmp_path / "src" / "keep.lisp", "(defun keep ())")
+    _make_file(tmp_path / "src" / "drop.tmp.lisp", "(defun drop1 ())")
+    _make_file(tmp_path / "vendor" / "third_party.cl", "(defun drop2 ())")
+    _make_file(tmp_path / "archive" / "old.asd", "(defun drop3 ())")
+
+    files = collect_files(
+        root=tmp_path,
+        input_selectors=[],
+        extension_selectors=[".lisp", ".cl", ".asd"],
+        excludes=["vendor", "src/*.tmp.lisp", "re:^archive/.*"],
+        include_hidden=False,
+    )
+
+    assert [str(rel) for rel, _ in files] == ["src/keep.lisp"]
+
+
+def test_collect_files_applies_exclude_grep_filter(tmp_path: Path):
+    _make_file(tmp_path / "src" / "keep.lisp", "(defun keep ())")
+    _make_file(tmp_path / "src" / "drop.lisp", "(defun dangerous ())")
+
+    files = collect_files(
+        root=tmp_path,
+        input_selectors=[],
+        extension_selectors=[".lisp"],
+        excludes=[],
+        include_hidden=False,
+        exclude_grep_pattern="dangerous",
+    )
+
+    assert [str(rel) for rel, _ in files] == ["src/keep.lisp"]
