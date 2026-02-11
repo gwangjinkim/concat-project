@@ -2,138 +2,65 @@
 
 **Concatenate source files from a project into a single file with headers, tree view, and filtering — built for Lisp and beyond.**
 
----
-
 ## Features
 
-- **Recursive directory traversal**
-- **Prepends `;;;; filename` before each file's contents**
-- **Adds a tree view of the project structure at the top**
-- **Filter by file extension (e.g., `.lisp`, `.cl`, `.asd`)**
-- **Exclude folders or files**
-- **CLI-first, modern `pyproject.toml` setup, zero dependencies**
-- **Modular and extensible — clean architecture**
-
----
+- Recursive directory traversal
+- Prepends `;;;; filename` before each file's contents
+- Adds a tree view of the selected files at the top
+- Flexible file selection with literal paths, glob patterns, and regex selectors
+- Extension filtering with literals, glob patterns, or regex selectors
+- Path exclusion filtering with literal, glob, and regex selectors
+- Optional content include/exclude filtering with `--grep [pattern]` and `--exclude-grep [pattern]`
+- CLI-first, modern `pyproject.toml` setup
 
 ## Installation
 
-This project uses [uv](https://github.com/astral-sh/uv) - a next-generation Python package manager that's extremely fast and designed to replace `pip`, `poetry`, `venv`, `virtualenv`, `pyenv`, `pytools`, `pipx`, and more (written in Rust).
-
-### 1. Install uv (if not already)
-
-```bash
-curl -Ls https://astral.sh/uv/install.sh | sh
-```
-
-or with Homebrew:
-
-```bash
-brew install astral-sh/uv/uv
-```
-
-For Windows or other options, see: https://docs.astral.sh/uv/installation/
-
-### 2. Create environment and install
-
-Make sure you're in the root folder of the project.
+This project uses [uv](https://github.com/astral-sh/uv).
 
 ```bash
 uv venv
-uv pip install -e .
+uv sync
 ```
-
-To make the CLI command available from everywhere and not just from within the project folder, run:
-```bash
-cd concat-project    # enter the project folder
-uv tool install .    # install using uv tool (pytools equivalent)
-```
-
-Now the CLI is available globally:
-
-```bash
-concate-project --help
-```
-
----
 
 ## Example Usage
 
 ```bash
 concat-project \
-  --input ./my-lisp-project \
-  --output ./my-lisp-project/flattened.lisp \
-  --ext .lisp .cl .asd \
-  --exclude tests .git README.md \
-  --tree-style unicode
+  --root ./my-lisp-project \
+  --input 'src/**/*.lisp' 're:^lib/.*\\.cl$' \
+  --ext .lisp .cl '*.asd' \
+  --grep '(defun|defclass)' \
+  --exclude 'vendor/**' 're:^archive/' '*.generated.lisp' \
+  --exclude-grep '(TODO_REMOVE|DANGEROUS)' \
+  --output ./my-lisp-project/flattened.lisp
 ```
 
-This will:
-- Find all .lisp, .cl, .asd files in the folder my-lisp-project
-- Skip excluded files or folders like tests/, .git/, and README.md
-- Write the output to flattened.lisp, starting with a directory tree
-- Prepend each file’s content with a ;;;; filename header
+## Command-Line Options
 
----
+| Option                    | Description |
+|---------------------------|-------------|
+| `--root`                  | Root directory used for recursive discovery (defaults to current directory) |
+| `--input`                 | Optional file selectors relative to `--root` (literal paths, globs, or `re:<pattern>`) |
+| `--output`                | Path to write the concatenated file (**required**) |
+| `--ext`                   | Required extension selectors (literals, globs, or `re:<pattern>`) |
+| `--grep [pattern]`        | Optional regex to include files by content (`--grep` alone means any content) |
+| `--exclude`               | Optional exclude selectors (literal path/prefix, glob, or `re:<pattern>`) |
+| `--exclude-grep [pattern]`| Optional regex to exclude files by content (`--exclude-grep` alone excludes any readable text file) |
+| `--include-hidden`        | Also include hidden files and folders |
+| `--tree-style`            | Style of file tree: `unicode` (default) or `ascii` |
 
-##  Command-Line Options
+## Selector rules
 
-| Option             | Description                                                   |
-|--------------------|---------------------------------------------------------------|
-| `--input`          | Path to the root project folder (**required**)                |
-| `--output`         | Path to write the concatenated file (**required**)            |
-| `--ext`            | Allowed file extensions (e.g., `.lisp`, `.cl`, `.asd`)        |
-| `--exclude`        | Folders or files to exclude (relative paths)                  |
-| `--include-hidden` | Also include hidden files and folders                         |
-| `--tree-style`     | Style of file tree: `unicode` (default) or `ascii`            |
-
----
-
-## Project Layout
-
-```bash
-concat-project/
-├── pyproject.toml            # CLI configuration
-├── README.md
-└── src/
-    └── concat_project/
-        ├── __init__.py
-        ├── cli.py             # Entry point
-        ├── config.py          # Arg parsing & validation
-        ├── tree_renderer.py   # Tree drawing
-        ├── file_collector.py  # File discovery
-        └── writer.py          # Output generation
-```
-
----
-
-Future Ideas
-- `--sort` load-order (ASDF support)
-- `--strip-comments` or `--minify`
-- `--write-index` of files with byte offsets
-- `--output-format` options: plain, JSON, or HTML
-
----
-
-## For Developers
-
-Want to contribute, extend, or use this in your own tools?
-1. Fork it.
-2. Create your feature in a separate module in src/concat_project/.
-3. Add a test folder if needed.
-4. Submit a PR!
-
----
+- **Literal path:** `--input src/core/main.lisp`
+- **Glob path:** `--input 'src/**/*.lisp'`
+- **Regex path:** `--input 're:^src/.+\.lisp$'`
+- **Extension literal:** `--ext .lisp cl`
+- **Extension glob:** `--ext '*.lisp' '*.cl'`
+- **Extension regex:** `--ext 're:\.(lisp|cl|asd)$'`
+- **Exclude literal/prefix:** `--exclude vendor`
+- **Exclude glob:** `--exclude 'vendor/**' '*.tmp.lisp'`
+- **Exclude regex:** `--exclude 're:^archive/'`
 
 ## License
 
 MIT License.
-
----
-
-## Inspiration
-
-This tool was originally designed to help analyze large Common Lisp projects like vivace-graph-v3, where organizing and inspecting thousands of lines of code quickly was essential.
-
----
-
