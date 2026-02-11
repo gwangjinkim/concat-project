@@ -1,6 +1,6 @@
 [project]
 name = "concat-project"
-version = "0.1.0"
+version = "0.1.1"
 description = "Concatenate project files with section headers and file tree overview."
 authors = [{ name = "Gwang-Jin Kim", email = "gwang.jin.kim.phd@gmail.com" }]
 readme = "README.md"
